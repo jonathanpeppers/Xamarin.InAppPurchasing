@@ -5,7 +5,6 @@
 using System.Net;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using Xamarin.InAppPurchasing;
 
 private const string BundleId = "com.hitcents.nbalife";
 private const string AppleProductionUrl = "https://buy.itunes.apple.com/verifyReceipt";
