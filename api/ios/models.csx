@@ -1,4 +1,8 @@
 #r "System.Runtime.Serialization"
+#r "Newtonsoft.Json"
+
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System.Runtime.Serialization;
 
 /// <summary>
