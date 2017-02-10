@@ -39,7 +39,9 @@
       <DependentUpon>Xamarin.InAppPurchasingPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Receipt.cs" />
+    <Compile Include="..\api\ios\AppleReceipt.cs">
+      <Link>AppleReceipt.cs</Link>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <Reference Include="Xamarin.Forms.Core">

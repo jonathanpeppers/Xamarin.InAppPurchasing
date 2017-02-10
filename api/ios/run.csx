@@ -1,6 +1,6 @@
 #r "Newtonsoft.Json"
 #load "models.csx"
-#load "Receipt.cs"
+#load "AppleReceipt.cs"
 
 using System.Net;
 using Newtonsoft.Json;
@@ -15,7 +15,7 @@ private static JsonSerializer _serializer = new JsonSerializer();
 
 public static async Task<HttpResponseMessage> Run(HttpRequestMessage req, TraceWriter log)
 {
-    var receipt = await req.Content.ReadAsAsync<Receipt>();
+    var receipt = await req.Content.ReadAsAsync<AppleReceipt>();
     
     if (string.IsNullOrEmpty(receipt.Id) || string.IsNullOrEmpty(receipt.TransactionId) || receipt.Data == null)
         return req.CreateResponse(HttpStatusCode.BadRequest);
@@ -59,7 +59,7 @@ public static async Task<HttpResponseMessage> Run(HttpRequestMessage req, TraceW
     return req.CreateResponse(HttpStatusCode.OK);
 }
 
-private static async Task<AppleResponse> PostAppleReceipt(string url, Receipt receipt)
+private static async Task<AppleResponse> PostAppleReceipt(string url, AppleReceipt receipt)
 {
     string json = new JObject(new JProperty("receipt-data", receipt.Data)).ToString();
     var response = await _client.PostAsync(url, new StringContent(json));

@@ -17,7 +17,7 @@ namespace Xamarin.InAppPurchasing.Tests
         public async Task VerifyApple()
         {
             var httpClient = new HttpClient();
-            string json = JsonConvert.SerializeObject(new Receipt
+            string json = JsonConvert.SerializeObject(new AppleReceipt
             {
                 Id = "com.hitcents.nbalife.pack1",
                 TransactionId = "1000000257392859",
