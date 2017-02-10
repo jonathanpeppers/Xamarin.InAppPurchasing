@@ -16,14 +16,10 @@ public static async Task<HttpResponseMessage> Run(HttpRequestMessage req, TraceW
 {
     var receipt = await req.Content.ReadAsAsync<Receipt>();
     
-    if (string.IsNullOrEmpty(receipt.Id))
-        throw new ArgumentNullException(nameof(receipt.Id));
-    if (string.IsNullOrEmpty(receipt.TransactionId))
-        throw new ArgumentNullException(nameof(receipt.TransactionId));
-    if (receipt.Data == null)
-        throw new ArgumentNullException(nameof(receipt.Data));
+    if (string.IsNullOrEmpty(receipt.Id) || string.IsNullOrEmpty(receipt.TransactionId) || receipt.Data == null)
+        return req.CreateResponse(HttpStatusCode.BadRequest);
     
-    log.Info("iOS receipt:" + receipt.TransactionId);
+    log.Info($"iOS receipt: {receipt.Id}, {receipt.TransactionId}");
     
     var result = await PostAppleReceipt(AppleProductionUrl, receipt);
 
@@ -34,29 +30,29 @@ public static async Task<HttpResponseMessage> Run(HttpRequestMessage req, TraceW
     if (result.Status == AppleStatus.Success)
     {
         if (result.Receipt == null)
-            throw new Exception("IAP invalid, no receipt returned!");
+            return req.CreateResponse(HttpStatusCode.BadRequest, "IAP invalid, no receipt returned!");
 
         string bundleId = result.Receipt.Property("bundle_id").Value.Value<string>();
         if (BundleId != bundleId)
-            throw new Exception($"IAP invalid, bundle id {bundleId} does not match {BundleId}!");
+            return req.CreateResponse(HttpStatusCode.BadRequest, $"IAP invalid, bundle id {bundleId} does not match {BundleId}!");
 
         var purchases = result.Receipt.Property("in_app").Value.Value<JArray>();
         if (purchases == null || purchases.Count == 0)
-            throw new Exception("IAP invalid, no purchases returned!");
+            return req.CreateResponse(HttpStatusCode.BadRequest, "IAP invalid, no purchases returned!");
 
         var purchase = purchases.OfType<JObject>().FirstOrDefault(p => p.Property("product_id").Value.Value<string>() == receipt.Id);
         if (purchase == null)
-            throw new Exception($"IAP invalid, did not find {receipt.Id} in list of purchases!");
+            return req.CreateResponse(HttpStatusCode.BadRequest, $"IAP invalid, did not find {receipt.Id} in list of purchases!");
 
         string transactionId = purchase.Property("transaction_id").Value.Value<string>();
         if (receipt.TransactionId != transactionId)
-            throw new Exception($"IAP invalid, TransactionId did not match!");
+            return req.CreateResponse(HttpStatusCode.BadRequest, $"IAP invalid, TransactionId did not match!");
 
         log.Info("IAP Success from Apple at: " + result.Url);
     }
     else
     {
-        throw new Exception($"IAP invalid, status code: {result.Status}, {(int)result.Status}");
+        return req.CreateResponse(HttpStatusCode.BadRequest, $"IAP invalid, status code: {result.Status}, {(int)result.Status}");
     }
 
     return req.CreateResponse(HttpStatusCode.OK);
@@ -81,67 +77,22 @@ private static async Task<AppleResponse> PostAppleReceipt(string url, Receipt re
 /// <summary>
 /// A receipt for in-app purchases
 /// </summary>
-[DataContract]
 public class Receipt
 {
     /// <summary>
     /// The purchase Id
     /// </summary>
-    [DataMember(EmitDefaultValue = false)]
     public string Id { get; set; }
-
-    /// <summary>
-    /// The player's Id (should be set by server only)
-    /// </summary>
-    [DataMember(EmitDefaultValue = false)]
-    public string PlayerId { get; set; }
 
     /// <summary>
     /// The transaction Id
     /// </summary>
-    [DataMember(EmitDefaultValue = false)]
     public string TransactionId { get; set; }
-
-    /// <summary>
-    /// A byte[] representing the device Id
-    /// </summary>
-    [DataMember(EmitDefaultValue = false)]
-    public byte[] DeviceId { get; set; }
-
-    /// <summary>
-    /// The app store this came from
-    /// </summary>
-    [DataMember(EmitDefaultValue = false)]
-    public Store Store { get; set; }
 
     /// <summary>
     /// The binary "receipt" from Apple
     /// </summary>
-    [DataMember(EmitDefaultValue = false)]
     public byte[] Data { get; set; }
-
-    /// <summary>
-    /// The "developer payload" sent to Google Play
-    /// </summary>
-    [DataMember(EmitDefaultValue = false)]
-    public string DeveloperPayload { get; set; }
-
-    /// <summary>
-    /// The "purchase token" returned from Google Play for a purchase
-    /// </summary>
-    [DataMember(EmitDefaultValue = false)]
-    public string PurchaseToken { get; set; }
-}
-
-public enum Store
-{
-    /// <summary>
-    /// Means this is a test purchase that never went to a store
-    /// </summary>
-    Test,
-    Apple,
-    Google,
-    Amazon,
 }
 
 public enum AppleStatus
