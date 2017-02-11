@@ -19,6 +19,7 @@ namespace Xamarin.InAppPurchasing.Tests
             var httpClient = new HttpClient();
             string json = JsonConvert.SerializeObject(new AppleReceipt
             {
+                BundleId = "com.hitcents.nbalife",
                 Id = "com.hitcents.nbalife.pack1",
                 TransactionId = "1000000257392859",
                 Data = Convert.FromBase64String(AppleReceipt),

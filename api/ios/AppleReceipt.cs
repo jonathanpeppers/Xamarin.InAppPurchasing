@@ -11,6 +11,11 @@ public class AppleReceipt
     public string Id { get; set; }
 
     /// <summary>
+    /// The bundle Id of the app
+    /// </summary>
+    public string BundleId { get; set; }
+
+    /// <summary>
     /// The transaction Id
     /// </summary>
     public string TransactionId { get; set; }

@@ -6,7 +6,6 @@ using System.Net;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
-private const string BundleId = "com.hitcents.nbalife";
 private const string AppleProductionUrl = "https://buy.itunes.apple.com/verifyReceipt";
 private const string AppleTestUrl = "https://sandbox.itunes.apple.com/verifyReceipt";
 private static HttpClient _client = new HttpClient();
@@ -33,8 +32,10 @@ public static async Task<HttpResponseMessage> Run(HttpRequestMessage req, TraceW
             return req.CreateResponse(HttpStatusCode.BadRequest, "IAP invalid, no receipt returned!");
 
         string bundleId = result.Receipt.Property("bundle_id").Value.Value<string>();
-        if (BundleId != bundleId)
+        if (receipt.BundleId != bundleId)
+        {
             return req.CreateResponse(HttpStatusCode.BadRequest, $"IAP invalid, bundle id {bundleId} does not match {BundleId}!");
+        }
 
         var purchases = result.Receipt.Property("in_app").Value.Value<JArray>();
         if (purchases == null || purchases.Count == 0)
