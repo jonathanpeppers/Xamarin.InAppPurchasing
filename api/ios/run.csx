@@ -18,45 +18,62 @@ public static async Task<HttpResponseMessage> Run(HttpRequestMessage req, TraceW
     if (string.IsNullOrEmpty(receipt.Id) || string.IsNullOrEmpty(receipt.TransactionId) || receipt.Data == null)
         return req.CreateResponse(HttpStatusCode.BadRequest);
     
-    log.Info($"iOS receipt: {receipt.Id}, {receipt.TransactionId}");
+    log.Info($"IAP receipt: {receipt.Id}, {receipt.TransactionId}");
     
     var result = await PostAppleReceipt(AppleProductionUrl, receipt);
 
     //Apple recommends calling production, then falling back to sandbox on an error code
     if (result.Status == AppleStatus.TestEnvironment)
+    {
+        log.Info("Sandbox purchase, calling test environment...");
+
         result = await PostAppleReceipt(AppleTestUrl, receipt);
+    }
 
     if (result.Status == AppleStatus.Success)
     {
         if (result.Receipt == null)
-            return req.CreateResponse(HttpStatusCode.BadRequest, "IAP invalid, no receipt returned!");
+        {
+            log.Info("IAP invalid, no receipt returned!");
+            return req.CreateResponse(HttpStatusCode.BadRequest);
+        }
 
         string bundleId = result.Receipt.Property("bundle_id").Value.Value<string>();
         if (receipt.BundleId != bundleId)
         {
-            return req.CreateResponse(HttpStatusCode.BadRequest, $"IAP invalid, bundle id {bundleId} does not match {BundleId}!");
+            log.Info($"IAP invalid, bundle id {bundleId} does not match {receipt.BundleId}!");
+            return req.CreateResponse(HttpStatusCode.BadRequest);
         }
 
         var purchases = result.Receipt.Property("in_app").Value.Value<JArray>();
         if (purchases == null || purchases.Count == 0)
-            return req.CreateResponse(HttpStatusCode.BadRequest, "IAP invalid, no purchases returned!");
+        {
+            log.Info("IAP invalid, no purchases returned!");
+            return req.CreateResponse(HttpStatusCode.BadRequest);
+        }
 
         var purchase = purchases.OfType<JObject>().FirstOrDefault(p => p.Property("product_id").Value.Value<string>() == receipt.Id);
         if (purchase == null)
-            return req.CreateResponse(HttpStatusCode.BadRequest, $"IAP invalid, did not find {receipt.Id} in list of purchases!");
+        {
+            log.Info($"IAP invalid, did not find {receipt.Id} in list of purchases!");
+            return req.CreateResponse(HttpStatusCode.BadRequest);
+        }
 
         string transactionId = purchase.Property("transaction_id").Value.Value<string>();
         if (receipt.TransactionId != transactionId)
-            return req.CreateResponse(HttpStatusCode.BadRequest, $"IAP invalid, TransactionId did not match!");
+        {
+            log.Info($"IAP invalid, TransactionId did not match!");
+            return req.CreateResponse(HttpStatusCode.BadRequest);
+        }
 
-        log.Info("IAP Success from Apple at: " + result.Url);
+        log.Info($"IAP Success: {receipt.Id}, {receipt.TransactionId}");
+        return req.CreateResponse(HttpStatusCode.OK);
     }
     else
     {
-        return req.CreateResponse(HttpStatusCode.BadRequest, $"IAP invalid, status code: {result.Status}, {(int)result.Status}");
+        log.Info($"IAP invalid, status code: {result.Status}, {(int)result.Status}");
+        return req.CreateResponse(HttpStatusCode.BadRequest);
     }
-
-    return req.CreateResponse(HttpStatusCode.OK);
 }
 
 private static async Task<AppleResponse> PostAppleReceipt(string url, AppleReceipt receipt)
@@ -69,8 +86,6 @@ private static async Task<AppleResponse> PostAppleReceipt(string url, AppleRecei
     using (var reader = new StreamReader(stream))
     using (var jsonReader = new JsonTextReader(reader))
     {
-        var result = _serializer.Deserialize<AppleResponse>(jsonReader);
-        result.Url = url;
-        return result;
+        return _serializer.Deserialize<AppleResponse>(jsonReader);
     }
 }

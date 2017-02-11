@@ -47,9 +47,6 @@ public enum AppleStatus
 [DataContract]
 public class AppleResponse
 {
-    [IgnoreDataMember]
-    public string Url { get; set; }
-
     [DataMember(Name = "status")]
     public AppleStatus Status { get; set; }
 
