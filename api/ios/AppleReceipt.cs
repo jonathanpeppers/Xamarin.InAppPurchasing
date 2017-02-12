@@ -1,9 +1,10 @@
 //NOTE: can't declare namespace in C# scripts
+using Xamarin.InAppPurchasing;
 
 /// <summary>
-/// A receipt for in-app purchases
+/// Base class for receipts on all platforms
 /// </summary>
-public class AppleReceipt
+public class Receipt
 {
     /// <summary>
     /// The purchase Id
@@ -19,7 +20,13 @@ public class AppleReceipt
     /// The transaction Id
     /// </summary>
     public string TransactionId { get; set; }
+}
 
+/// <summary>
+/// A receipt for in-app purchases
+/// </summary>
+public class AppleReceipt : Receipt
+{
     /// <summary>
     /// The binary "receipt" from Apple
     /// </summary>
