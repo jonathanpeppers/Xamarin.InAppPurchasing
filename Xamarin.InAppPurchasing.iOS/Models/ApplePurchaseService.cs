@@ -120,6 +120,7 @@ namespace Xamarin.InAppPurchasing.iOS
 
                                 var receipt = new AppleReceipt
                                 {
+                                    BundleId = NSBundle.MainBundle.BundleIdentifier,
                                     Id = transaction.Payment.ProductIdentifier,
                                     TransactionId = transaction.TransactionIdentifier,
                                     Data = data.ToArray(),
