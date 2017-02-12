@@ -1,4 +1,5 @@
 ﻿using System.Threading.Tasks;
+using System.Diagnostics;
 
 namespace Xamarin.InAppPurchasing
 {
@@ -17,6 +18,8 @@ namespace Xamarin.InAppPurchasing
         public async Task Buy(Purchase purchase)
         {
             var receipt = await BuyNative(purchase);
+
+            Debug.WriteLine("Native purchase successful: " + receipt.Id);
 
             var appleReceipt = receipt as AppleReceipt;
             if (appleReceipt != null)

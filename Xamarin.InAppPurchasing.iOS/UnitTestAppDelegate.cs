@@ -1,23 +1,22 @@
-﻿using Foundation;
+﻿using System.Reflection;
+using Foundation;
 using UIKit;
-using MonoTouch.NUnit.UI;
+using Xunit.Runner;
+using Xunit.Sdk;
 
 namespace Xamarin.InAppPurchasing.iOS
 {
     [Register("UnitTestAppDelegate")]
-    public partial class UnitTestAppDelegate : UIApplicationDelegate
+    public partial class UnitTestAppDelegate : RunnerAppDelegate
     {
-        UIWindow window;
-        TouchRunner runner;
-
-        public override bool FinishedLaunching(UIApplication app, NSDictionary options)
+        public override bool FinishedLaunching(UIApplication uiApplication, NSDictionary launchOptions)
         {
-            window = new UIWindow(UIScreen.MainScreen.Bounds);
-            runner = new TouchRunner(window);
-            runner.Add(System.Reflection.Assembly.GetExecutingAssembly());
-            window.RootViewController = new UINavigationController(runner.GetViewController());
-            window.MakeKeyAndVisible();
-            return true;
+            // We need this to ensure the execution assembly is part of the app bundle
+            AddExecutionAssembly(typeof(ExtensibilityPointFactory).Assembly);
+            // tests can be inside the main assembly
+            AddTestAssembly(Assembly.GetExecutingAssembly());
+
+            return base.FinishedLaunching(uiApplication, launchOptions);
         }
     }
 }
