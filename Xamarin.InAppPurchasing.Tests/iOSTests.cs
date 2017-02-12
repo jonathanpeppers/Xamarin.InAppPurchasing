@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Net.Http;
-using System.Net.Http.Headers;
 using System.Threading.Tasks;
-using Newtonsoft.Json;
 using NUnit.Framework;
 
 namespace Xamarin.InAppPurchasing.Tests
@@ -29,6 +27,53 @@ namespace Xamarin.InAppPurchasing.Tests
 
             var response = await httpClient.PostAsync(Url, content);
             response.EnsureSuccessStatusCode();
+        }
+
+        [Test, ExpectedException(typeof(HttpRequestException))]
+        public async Task VerifyAppleBadData()
+        {
+            await _client.Verify(new AppleReceipt
+            {
+                BundleId = "com.hitcents.nbalife",
+                Id = "com.hitcents.nbalife.pack1",
+                TransactionId = "woot",
+                Data = Guid.NewGuid().ToByteArray(),
+            });
+        }
+
+        [Test, ExpectedException(typeof(HttpRequestException))]
+        public async Task VerifyAppleWrongId()
+        {
+            await _client.Verify(new AppleReceipt
+            {
+                BundleId = "com.hitcents.nbalife",
+                Id = "com.somethingwrong.pack1",
+                TransactionId = "1000000257392859",
+                Data = Convert.FromBase64String(AppleReceipt),
+            });
+        }
+
+        [Test, ExpectedException(typeof(HttpRequestException))]
+        public async Task VerifyAppleBadTransactionId()
+        {
+            await _client.Verify(new AppleReceipt
+            {
+                Id = "com.hitcents.nbalife.pack1",
+                TransactionId = "wrong",
+                Data = Convert.FromBase64String(AppleReceipt),
+            });
+        }
+
+        [Test, ExpectedException(typeof(HttpRequestException))]
+        public async Task VerifyAppleWrongBundleId()
+        {
+            await _client.Verify(new AppleReceipt
+            {
+                Id = "com.hitcents.nbalife.pack1",
+                BundleId = "com.somethingwrong",
+                TransactionId = "1000000257392859",
+                Data = Convert.FromBase64String(AppleReceipt),
+            });
         }
     }
 }
