@@ -1,5 +1,4 @@
 //NOTE: can't declare namespace in C# scripts
-using Xamarin.InAppPurchasing;
 
 /// <summary>
 /// Base class for receipts on all platforms
