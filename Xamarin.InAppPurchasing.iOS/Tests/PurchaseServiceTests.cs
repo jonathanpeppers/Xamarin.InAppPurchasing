@@ -1,9 +1,9 @@
 ﻿using System.Threading.Tasks;
-using Foundation;
 using StoreKit;
 using Xunit;
+using Xamarin.InAppPurchasing.iOS;
 
-namespace Xamarin.InAppPurchasing.iOS
+namespace IAP
 {
     /// <summary>
     /// NOTE: some of these tests only work on a device with:
@@ -48,6 +48,16 @@ namespace Xamarin.InAppPurchasing.iOS
             Assert.Equal(Purchase2, purchase.Id);
             Assert.IsType<SKProduct>(purchase.NativeObject);
             Assert.Equal("$1.99", purchase.Price); //NOTE: test will fail if not in U.S.
+        }
+
+        [Fact]
+        public async Task Buy()
+        {
+            var purchases = await _purchaseService.GetPrices(Purchase1);
+            Assert.Equal(1, purchases.Length);
+
+            var purchase = purchases[0];
+            await _purchaseService.Buy(purchase);
         }
     }
 }
