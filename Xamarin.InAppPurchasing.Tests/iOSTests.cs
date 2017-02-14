@@ -31,48 +31,56 @@ namespace Xamarin.InAppPurchasing.Tests
         [Fact]
         public async Task VerifyAppleBadData()
         {
-            await Assert.ThrowsAsync<HttpRequestException>(() => _client.Verify(new AppleReceipt
+            var exc = await Assert.ThrowsAsync<HttpRequestException>(() => _client.Verify(new AppleReceipt
             {
                 BundleId = "com.hitcents.nbalife",
                 Id = "com.hitcents.nbalife.pack1",
                 TransactionId = "woot",
                 Data = Guid.NewGuid().ToByteArray(),
             }));
+
+            Assert.Equal("400 (Bad Request)", exc.Message);
         }
 
         [Fact]
         public async Task VerifyAppleWrongId()
         {
-            await Assert.ThrowsAsync<HttpRequestException>(() => _client.Verify(new AppleReceipt
+            var exc = await Assert.ThrowsAsync<HttpRequestException>(() => _client.Verify(new AppleReceipt
             {
                 BundleId = "com.hitcents.nbalife",
                 Id = "com.somethingwrong.pack1",
                 TransactionId = "1000000257392859",
                 Data = Convert.FromBase64String(AppleReceipt),
             }));
+
+            Assert.Equal("400 (Bad Request)", exc.Message);
         }
 
         [Fact]
         public async Task VerifyAppleBadTransactionId()
         {
-            await Assert.ThrowsAsync<HttpRequestException>(() => _client.Verify(new AppleReceipt
+            var exc = await Assert.ThrowsAsync<HttpRequestException>(() => _client.Verify(new AppleReceipt
             {
                 Id = "com.hitcents.nbalife.pack1",
                 TransactionId = "wrong",
                 Data = Convert.FromBase64String(AppleReceipt),
             }));
+
+            Assert.Equal("400 (Bad Request)", exc.Message);
         }
 
         [Fact]
         public async Task VerifyAppleWrongBundleId()
         {
-            await Assert.ThrowsAsync<HttpRequestException>(() => _client.Verify(new AppleReceipt
+            var exc = await Assert.ThrowsAsync<HttpRequestException>(() => _client.Verify(new AppleReceipt
             {
                 Id = "com.hitcents.nbalife.pack1",
                 BundleId = "com.somethingwrong",
                 TransactionId = "1000000257392859",
                 Data = Convert.FromBase64String(AppleReceipt),
             }));
+
+            Assert.Equal("400 (Bad Request)", exc.Message);
         }
     }
 }
