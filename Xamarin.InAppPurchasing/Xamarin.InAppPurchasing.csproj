@@ -30,7 +30,7 @@
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="..\api\ios\AppleReceipt.cs">
-      <Link>AppleReceipt.cs</Link>
+      <Link>Models\AppleReceipt.cs</Link>
     </Compile>
     <Compile Include="Models\AzureClient.cs" />
     <Compile Include="Models\JsonContent.cs" />
@@ -44,6 +44,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Models\" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
 </Project>
