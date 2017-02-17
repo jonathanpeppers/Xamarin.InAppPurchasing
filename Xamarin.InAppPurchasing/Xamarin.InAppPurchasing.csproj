@@ -32,6 +32,10 @@
     <Compile Include="..\api\ios\AppleReceipt.cs">
       <Link>AppleReceipt.cs</Link>
     </Compile>
+    <Compile Include="Models\AzureClient.cs" />
+    <Compile Include="Models\JsonContent.cs" />
+    <Compile Include="Models\PurchaseService.cs" />
+    <Compile Include="Models\Purchase.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="Newtonsoft.Json">
