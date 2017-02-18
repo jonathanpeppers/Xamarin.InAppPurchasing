@@ -8,30 +8,27 @@ using Google.Apis.Auth.OAuth2;
 using Google.Apis.Services;
 
 private static string GooglePlayAccount = ConfigurationManager.AppSettings["GooglePlayAccount"];
-private static string GooglePlayKey = ConfigurationManager.AppSettings["GooglePlayKey"].Trim();
+//NOTE: best way I could get \n in an app setting
+private static string GooglePlayKey = ConfigurationManager.AppSettings["GooglePlayKey"].Replace("\\n", "\n");
 
-
+private static ServiceAccountCredential _credential = new ServiceAccountCredential
+(
+    new ServiceAccountCredential.Initializer(GooglePlayAccount)
+    {
+        Scopes = new[] { AndroidPublisherService.Scope.Androidpublisher }
+    }.FromPrivateKey(GooglePlayKey)
+);
+private static AndroidPublisherService _googleService = new AndroidPublisherService
+(
+    new BaseClientService.Initializer
+    {
+        HttpClientInitializer = _credential,
+        ApplicationName = "Azure Function",
+    }
+);
 
 public static async Task<HttpResponseMessage> Run(HttpRequestMessage req, TraceWriter log)
 {
-    log.Info("Key: " + GooglePlayKey);
-
-    ServiceAccountCredential _credential = new ServiceAccountCredential
-    (
-        new ServiceAccountCredential.Initializer(GooglePlayAccount)
-        {
-            Scopes = new[] { AndroidPublisherService.Scope.Androidpublisher }
-        }.FromPrivateKey(GooglePlayKey)
-    );
-    AndroidPublisherService _googleService = new AndroidPublisherService
-    (
-        new BaseClientService.Initializer
-        {
-            HttpClientInitializer = _credential,
-            ApplicationName = "Azure Function",
-        }
-    );
-
     var receipt = await req.Content.ReadAsAsync<GoogleReceipt>();
     
     if (string.IsNullOrEmpty(receipt.Id) || string.IsNullOrEmpty(receipt.TransactionId) || string.IsNullOrEmpty(receipt.DeveloperPayload))
