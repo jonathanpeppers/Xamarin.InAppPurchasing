@@ -1,6 +1,6 @@
 #r "Newtonsoft.Json"
 #load "models.csx"
-#load "AppleReceipt.cs"
+#load "..\Shared\Receipt.cs"
 
 using System.Net;
 using Newtonsoft.Json;

@@ -29,13 +29,13 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="..\api\ios\AppleReceipt.cs">
-      <Link>Models\AppleReceipt.cs</Link>
-    </Compile>
     <Compile Include="Models\AzureClient.cs" />
     <Compile Include="Models\JsonContent.cs" />
     <Compile Include="Models\PurchaseService.cs" />
     <Compile Include="Models\Purchase.cs" />
+    <Compile Include="..\api\shared\Receipt.cs">
+      <Link>Models\Receipt.cs</Link>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <Reference Include="Newtonsoft.Json">

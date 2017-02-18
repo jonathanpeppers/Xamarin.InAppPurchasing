@@ -1,5 +1,5 @@
 #r "Google.Apis.AndroidPublisher.v2"
-#load "../ios/Receipt.cs"
+#load "..\Shared\Receipt.cs"
 
 using System.Net;
 using Google.Apis.AndroidPublisher.v2;
