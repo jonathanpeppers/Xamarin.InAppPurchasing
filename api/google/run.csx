@@ -8,7 +8,7 @@ using Google.Apis.Auth.OAuth2;
 using Google.Apis.Services;
 
 private static string GooglePlayAccount = ConfigurationManager.AppSettings["GooglePlayAccount"];
-private static string GooglePlayKey = ConfigurationManager.AppSettings["GooglePlayKey"];
+private static string GooglePlayKey = ConfigurationManager.AppSettings["GooglePlayKey"].Trim();
 
 
 
