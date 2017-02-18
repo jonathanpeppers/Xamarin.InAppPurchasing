@@ -5,7 +5,7 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{3853DB2C-C6F7-4EB6-A2A3-495B7D87CE2F}</ProjectGuid>
     <OutputType>Library</OutputType>
-    <RootNamespace>IAP</RootNamespace>
+    <RootNamespace>Xamarin.InAppPurchasing.Tests</RootNamespace>
     <AssemblyName>Xamarin.InAppPurchasing.Tests</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
   </PropertyGroup>
@@ -45,6 +45,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="iOSTests.cs" />
+    <Compile Include="GooglePlayTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
