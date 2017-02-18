@@ -41,4 +41,9 @@ public class GoogleReceipt : Receipt
     /// The "developer payload" used on the purchase
     /// </summary>
     public string DeveloperPayload { get; set; }
+
+    /// <summary>
+    /// The receipt data for Google Play
+    /// </summary>
+    public string PurchaseToken { get; set; }
 }
