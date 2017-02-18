@@ -22,7 +22,7 @@ public class Receipt
 }
 
 /// <summary>
-/// A receipt for in-app purchases
+/// A receipt for iOS in-app purchases
 /// </summary>
 public class AppleReceipt : Receipt
 {
@@ -30,4 +30,15 @@ public class AppleReceipt : Receipt
     /// The binary "receipt" from Apple
     /// </summary>
     public byte[] Data { get; set; }
+}
+
+/// <summary>
+/// A receipt for Google Play in-app purchases
+/// </summary>
+public class GoogleReceipt : Receipt
+{
+    /// <summary>
+    /// The "developer payload" used on the purchase
+    /// </summary>
+    public string DeveloperPayload { get; set; }
 }
