@@ -1,0 +1,9 @@
+{
+  "frameworks": {
+    "net46":{
+      "dependencies": {
+        "Google.Apis.AndroidPublisher.v2": "1.20.0.735"
+      }
+    }
+   }
+}
