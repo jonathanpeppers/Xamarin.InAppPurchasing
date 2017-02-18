@@ -32,7 +32,7 @@ public static async Task<HttpResponseMessage> Run(HttpRequestMessage req, TraceW
 
     log.Info($"IAP receipt: {receipt.Id}, {receipt.TransactionId}");
 
-    var request = _googleService.Value.Purchases.Products.Get(receipt.BundleId, receipt.Id, receipt.PurchaseToken);
+    var request = _googleService.Purchases.Products.Get(receipt.BundleId, receipt.Id, receipt.PurchaseToken);
     var purchaseState = await request.ExecuteAsync();
 
     if (purchaseState.DeveloperPayload != receipt.DeveloperPayload)
