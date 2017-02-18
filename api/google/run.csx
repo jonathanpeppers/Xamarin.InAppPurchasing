@@ -36,17 +36,25 @@ public static async Task<HttpResponseMessage> Run(HttpRequestMessage req, TraceW
 
     log.Info($"IAP receipt: {receipt.Id}, {receipt.TransactionId}");
 
-    var request = _googleService.Purchases.Products.Get(receipt.BundleId, receipt.Id, receipt.PurchaseToken);
-    var purchaseState = await request.ExecuteAsync();
+    try
+    {
+        var request = _googleService.Purchases.Products.Get(receipt.BundleId, receipt.Id, receipt.PurchaseToken);
+        var purchaseState = await request.ExecuteAsync();
 
-    if (purchaseState.DeveloperPayload != receipt.DeveloperPayload)
+        if (purchaseState.DeveloperPayload != receipt.DeveloperPayload)
+        {
+            log.Info($"IAP invalid, DeveloperPayload did not match!");
+            return req.CreateResponse(HttpStatusCode.BadRequest);
+        }   
+        if (purchaseState.PurchaseState != 0)
+        {
+            log.Info($"IAP invalid, purchase was cancelled or refunded!");
+            return req.CreateResponse(HttpStatusCode.BadRequest);
+        }
+    }
+    catch (Exception exc)
     {
-        log.Info($"IAP invalid, DeveloperPayload did not match!");
-        return req.CreateResponse(HttpStatusCode.BadRequest);
-    }   
-    if (purchaseState.PurchaseState != 0)
-    {
-        log.Info($"IAP invalid, purchase was cancelled or refunded!");
+        log.Info($"IAP invalid, error reported: " + exc.Message);
         return req.CreateResponse(HttpStatusCode.BadRequest);
     }
 
