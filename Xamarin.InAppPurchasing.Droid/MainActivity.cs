@@ -1,18 +1,18 @@
 ﻿using Android.App;
-using Android.Widget;
 using Android.OS;
+using System.Reflection;
+using Xunit.Runners.UI;
 
 namespace Xamarin.InAppPurchasing.Droid
 {
-    [Activity(Label = "Xamarin.InAppPurchasing.Droid", MainLauncher = true)]
-    public class MainActivity : Activity
+    [Activity(Label = "Xamarin.InAppPurchasing.Droid", MainLauncher = true, Theme = "@android:style/Theme.Material.Light")]
+    public class MainActivity : RunnerActivity
     {
         protected override void OnCreate(Bundle savedInstanceState)
         {
-            base.OnCreate(savedInstanceState);
+            AddTestAssembly(Assembly.GetExecutingAssembly());
 
-            // Set our view from the "main" layout resource
-            SetContentView(Resource.Layout.Main);
+            base.OnCreate(savedInstanceState);
         }
     }
 }
