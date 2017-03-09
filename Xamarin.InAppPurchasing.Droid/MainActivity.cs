@@ -1,4 +1,5 @@
 ﻿using Android.App;
+using Android.Content;
 using Android.OS;
 using System.Reflection;
 using Xunit.Runners.UI;
@@ -13,6 +14,11 @@ namespace Xamarin.InAppPurchasing.Droid
             AddTestAssembly(Assembly.GetExecutingAssembly());
 
             base.OnCreate(savedInstanceState);
+        }
+
+        protected override void OnActivityResult(int requestCode, Result resultCode, Intent data)
+        {
+            PurchaseServiceTests.PurchaseService?.HandleActivityResult(requestCode, resultCode, data);
         }
     }
 }
