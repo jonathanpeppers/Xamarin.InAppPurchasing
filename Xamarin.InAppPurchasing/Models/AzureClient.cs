@@ -15,5 +15,12 @@ namespace Xamarin.InAppPurchasing
             var response = await _client.PostAsync(BaseUrl + "ios?code=YOUR_CODE_HERE", content);
             response.EnsureSuccessStatusCode();
         }
+
+        public async Task Verify(GoogleReceipt receipt)
+        {
+            var content = new JsonContent(receipt);
+            var response = await _client.PostAsync(BaseUrl + "google?code=YOUR_CODE_HERE", content);
+            response.EnsureSuccessStatusCode();
+        }
     }
 }
