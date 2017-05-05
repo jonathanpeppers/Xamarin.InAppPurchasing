@@ -57,19 +57,7 @@ namespace Xamarin.InAppPurchasing.Droid
             }
         }
 
-        public string PublicKey1 { get; set; }
-
-        public string PublicKey2 { get; set; }
-
-        public string PublicKey3 { get; set; }
-
-        public static string TransformString(string key, int i)
-        {
-            var chars = key.ToCharArray(); ;
-            for (int j = 0; j < chars.Length; j++)
-                chars[j] = (char)(chars[j] ^ i);
-            return new string(chars);
-        }
+        public string PublicKey { get; set; }
 
         public async override Task<Purchase[]> GetPrices(params string[] ids)
         {
@@ -167,12 +155,12 @@ namespace Xamarin.InAppPurchasing.Droid
 
         private bool IsSignatureValid(Order order, string orderJson)
         {
-            if (string.IsNullOrEmpty(PublicKey1) || string.IsNullOrEmpty(PublicKey2) || string.IsNullOrEmpty(PublicKey3))
+            if (string.IsNullOrEmpty(PublicKey))
                 throw new Exception("PublicKey not set!");
 
             if (_publicKey == null)
             {
-                var bytes = Convert.FromBase64String(TransformString(PublicKey1, 1) + TransformString(PublicKey2, 2) + TransformString(PublicKey3, 3));
+                var bytes = Convert.FromBase64String(PublicKey);
                 var keyFactory = KeyFactory.GetInstance("RSA");
                 _publicKey = keyFactory.GeneratePublic(new X509EncodedKeySpec(bytes));
             }

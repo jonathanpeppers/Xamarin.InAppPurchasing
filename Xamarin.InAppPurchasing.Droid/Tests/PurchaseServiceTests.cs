@@ -14,7 +14,10 @@ namespace Xamarin.InAppPurchasing.Droid
 
         public PurchaseServiceTests()
         {
-            PurchaseService = new GooglePlayPurchaseService();
+            PurchaseService = new GooglePlayPurchaseService
+            {
+                PublicKey = "YOUR_KEY_HERE",
+            };
         }
 
         [Fact]
