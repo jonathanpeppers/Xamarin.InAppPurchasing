@@ -185,6 +185,7 @@ namespace Xamarin.InAppPurchasing.Droid
             return new GoogleReceipt
             {
                 Id = order.ProductId,
+                BundleId = Application.Context.PackageName,
                 TransactionId = order.OrderId ?? "TEST", //NOTE: if null, it is a test purchase
                 PurchaseToken = order.PurchaseToken,
                 DeveloperPayload = order.DeveloperPayload,
