@@ -28,7 +28,12 @@ namespace Xamarin.InAppPurchasing
                 return;
             }
 
-            //TODO: Google Play here
+            var googleReceipt = receipt as GoogleReceipt;
+            if (googleReceipt != null)
+            {
+                await _client.Verify(googleReceipt);
+                return;
+            }
         }
 
         protected abstract Task<Receipt> BuyNative(Purchase purchase);
